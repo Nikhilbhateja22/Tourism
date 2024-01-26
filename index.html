@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Japanese Dish Vegetarian Checker</title>
+  <style>
+    body {
+      font-family: 'Arial', sans-serif;
+      text-align: center;
+    }
+
+    #result {
+      margin-top: 20px;
+    }
+  </style>
+</head>
+<body>
+  <h1>Japanese Dish Vegetarian Checker</h1>
+  <label for="dishName">Enter a Japanese Dish Name:</label>
+  <input type="text" id="dishName" placeholder="e.g., Sushi">
+  <button onclick="checkVegetarian()">Check</button>
+  <div id="result"></div>
+
+  <script>
+    async function checkVegetarian() {
+      const dishName = document.getElementById('dishName').value;
+      const resultContainer = document.getElementById('result');
+      resultContainer.innerHTML = 'Loading...';
+
+      try {
+        // Call the ChatGPT API to check if the dish is vegetarian
+        const response = await fetch('/api/checkVegetarian', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ dishName }),
+        });
+
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
+        }
+
+        const data = await response.json();
+        resultContainer.innerHTML = `<p>${data.message}</p>`;
+      } catch (error) {
+        console.error('Error:', error);
+        resultContainer.innerHTML = '<p>An error occurred. Please try again.</p>';
+      }
+    }
+  </script>
+</body>
+</html>
